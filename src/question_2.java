@@ -7,8 +7,6 @@
  * 系统名称：leetcode-test
  */
 
-import com.sun.tools.javac.util.StringUtils;
-
 /**
  * <2. 两数相加>
  * <给出两个 非空 的链表用来表示两个非负的整数。其中，它们各自的位数是按照 逆序 的方式存储的，并且它们的每个节点只能存储 一位 数字。
@@ -41,18 +39,52 @@ public class question_2 {
         node2.next = node3;
         ListNode node4 = new ListNode(5);
         ListNode node5 = new ListNode(6);
-        ListNode node6 = new ListNode(4);
+        ListNode node6 = new ListNode(8);
 
         node4.next = node5;
         node5.next = node6;
         addTwoNumbers(node1, node4);
     }
 
+    /**
+     * 逆序存储
+     * @param l1
+     * @param l2
+     * @return
+     */
     public static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-        ListNode currentNode = l1;
-        while (currentNode.next != null) {
+        //如果首节点相加大于等于10 ，则需要一个头结点去接收
+        //头结点暂定为 0
+        ListNode head = new ListNode(0);
+        ListNode currentNode = head;
+        ListNode currentNodeL1 = l1;
+        ListNode currentNodeL2 = l2;
+        //设置一个进位标志
+        int flag = 0;
+        while (currentNodeL1 != null || currentNodeL2 != null) {
+            //取出两个链表中的第一个节点（实际是数字最低位），进行相加
+            int l1Int = currentNodeL1 == null ? 0 : currentNodeL1.val;
+            int l2Int = currentNodeL2 == null ? 0 : currentNodeL2.val;
+            int sum = l1Int + l2Int + flag;
+            //对10 取模
+            flag = sum / 10;
+            // 对10 取余 ，为当前节点的求和值
+            currentNode.next = new ListNode(sum % 10);
+            //逆序，下一节点赋值为当前节点
+            currentNode = currentNode.next;
 
+            //不为空取下一节点
+            if (currentNodeL1 != null){
+                currentNodeL1 = currentNodeL1.next;
+            }
+            if (currentNodeL2 != null){
+                currentNodeL2 = currentNodeL2.next;
+            }
         }
-        return null;
+        //如果进位不等于0.说明头结点为1
+        if (flag!=0){
+            currentNode.next=new ListNode(flag);
+        }
+        return head.next;
     }
 }
